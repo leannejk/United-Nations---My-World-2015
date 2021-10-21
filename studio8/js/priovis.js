@@ -9,7 +9,6 @@ PrioVis = function(_parentElement, _data, _metaData){
     this.parentElement = _parentElement;
     this.data = _data;
     this.metaData = _metaData;
-    console.log(this.metaData)
     this.filteredData = this.data;
 
     this.initVis();
@@ -87,7 +86,7 @@ PrioVis.prototype.wrangleData = function(){
     });
 
 // Iterate over each day and fill array
-    vis.data.forEach(function(day){
+    vis.filteredData.forEach(function(day){
         d3.range(0,15).forEach(function(i){
             votesPerPriority[i] += day.priorities[i];
         });
@@ -135,7 +134,6 @@ PrioVis.prototype.updateVis = function(){
     // Call axis function with the new domain
     vis.svg.select(".y-axis").call(vis.yAxis);
 
-    // *** TO-DO ***
     // Update x-axis tick values to something more meaningful
     vis.svg.select(".x-axis").call(vis.xAxis)
         .selectAll("text")
@@ -152,6 +150,9 @@ PrioVis.prototype.onSelectionChange = function(selectionStart, selectionEnd){
     
     // *** TO-DO ***
     // Filter data depending on selected time period (brush)
+    vis.filteredData = vis.data.filter(function (d){
+        return d.time >= selectionStart && d.time <= selectionEnd;
+    })
  
 
 	vis.wrangleData();

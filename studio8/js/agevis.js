@@ -109,7 +109,7 @@ AgeVis.prototype.wrangleData = function(){
 
 
 // Iterate over each day and fill array
-    vis.data.forEach(function(day) {
+    vis.filteredData.forEach(function(day) {
         d3.range(0, 99).forEach(function (i) {
             votesPerAge[i] += day.ages[i];
         })
@@ -148,11 +148,15 @@ AgeVis.prototype.updateVis = function(){
 
 AgeVis.prototype.onSelectionChange = function(selectionStart, selectionEnd){
 	var vis = this;
-    //console.log('selectionStart');
-    //console.log(selectionEnd);
     
     // *** TO-DO ***
     // Filter data depending on selected time period (brush)
+    vis.filteredData = vis.data.filter(function (d){
+        return d.time >= selectionStart && d.time <= selectionEnd;
+    })
+
+
+
 
 	vis.wrangleData();
 }
