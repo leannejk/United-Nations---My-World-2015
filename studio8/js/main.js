@@ -13,7 +13,6 @@ files.forEach(function(url){
 });
 
 Promise.all(promises).then(function(values){
-	console.log(values);
 	createVis(values[0], values[1]);
 });
 
@@ -60,13 +59,15 @@ function createVis(perDayData, metaData){
 	// *** TO-DO ***
 	// (5) Bind event handler
 	$(myEventHandler).bind("selectionChanged", function(event, rangeStart, rangeEnd){
-		console.log(rangeStart)
 		ageVis.onSelectionChange(rangeStart, rangeEnd);
 	});
 
 	$(myEventHandler).bind("selectionChanged", function(event, rangeStart, rangeEnd){
-		console.log(rangeStart)
 		prioVis.onSelectionChange(rangeStart, rangeEnd);
+	});
+
+	$(myEventHandler).bind("selectionChanged", function(event, rangeStart, rangeEnd){
+		countVis.onSelectionChange(rangeStart, rangeEnd);
 	});
 
 

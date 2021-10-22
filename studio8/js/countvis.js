@@ -8,6 +8,7 @@
 CountVis = function(_parentElement, _data, _myEventHandler){
 	this.parentElement = _parentElement;
 	this.data = _data;
+	console.log(this.data)
 	this.myEventHandler = _myEventHandler;
 
 	this.initVis();
@@ -20,6 +21,7 @@ CountVis = function(_parentElement, _data, _myEventHandler){
 
 CountVis.prototype.initVis = function(){
 	var vis = this;
+
 
 	vis.margin = { top: 40, right: 0, bottom: 60, left: 60 };
 
@@ -69,6 +71,13 @@ CountVis.prototype.initVis = function(){
 			.attr("y", -8)
 			.text("Votes");
 
+	// time period title
+	vis.timeLabel = vis.svg.append("text")
+		.attr("x", 0)
+		.attr("y", -30)
+		.text(dateFormatter(vis.data[0].time) + "   --   " + dateFormatter(vis.data[vis.data.length - 1].time))
+
+
 
 	// Append a path for the area function, so that it is later behind the brush overlay
 	vis.timePath = vis.svg.append("path")
@@ -95,9 +104,6 @@ CountVis.prototype.initVis = function(){
 				$(vis.myEventHandler).trigger("selectionChanged", selection.map(vis.x.invert) );
 			}
 		});
-
-
-
 
 	// *** TO-DO ***
 	// Append brush component here
@@ -147,7 +153,7 @@ CountVis.prototype.wrangleData = function(){
 
 CountVis.prototype.updateVis = function(){
 	var vis = this;
-	
+
 	// *** TO-DO ***
 	// Call brush component here
 	
@@ -175,10 +181,8 @@ CountVis.prototype.updateVis = function(){
 
 CountVis.prototype.onSelectionChange = function(selectionStart, selectionEnd){
 	var vis = this;
-    // console.log('selectionStart');
-	// console.log(selectionEnd);
-	// *** TO-DO ***
-	// Filter data depending on selected time period (brush)
+
+	vis.timeLabel.text(dateFormatter(selectionStart) + "  --  " + dateFormatter(selectionEnd))
 
 
 	vis.wrangleData();
