@@ -122,7 +122,27 @@ CountVis.prototype.initVis = function(){
 	// *** TO-DO ***
 	// Define zoom
 
-	
+	vis.zoom = d3.zoom()
+		.on("zoom", function(event, d){
+
+			var transform = event.transform;
+			var new_xScale = transform.rescaleX(vis.x);
+			vis.svg.select('.x-axis')
+				.call(vis.xAxis.scale(new_xScale));
+			vis.area.x(d => new_xScale(d.time) );
+			vis.updateVis()
+
+		})
+		.scaleExtent([1,20]);
+
+
+	// Define the clipping region
+	vis.svg.append("defs").append("clipPath")
+		.attr("id", "clip")
+		.append("rect")
+		.attr("width", vis.width)
+		.attr("height", vis.height);
+
 
 
 	// (Filter, aggregate, modify data)
@@ -156,11 +176,17 @@ CountVis.prototype.updateVis = function(){
 
 	// *** TO-DO ***
 	// Call brush component here
-	
+	vis.svg.select(".brush")
+		.call(vis.currentBrushRegion)
+		.selectAll('rect')
+		.attr("height", vis.height);
 
 	// *** TO-DO ***
 	// Call zoom component here
-
+	vis.svg.select(".brush")
+		.call(vis.zoom)
+		.on("mousedown.zoom", null)
+		.on("touchstart.zoom", null);
 
 
 	// Call the area function and update the path
@@ -169,21 +195,17 @@ CountVis.prototype.updateVis = function(){
 
 	vis.timePath
 		.datum(vis.displayData)
-		.attr("d", vis.area);
+		.attr("d", vis.area)
+		.attr("clip-path", "url(#clip)");
 
 
 	// Call axis functions with the new domain 
 	vis.svg.select(".x-axis").call(vis.xAxis);
 	vis.svg.select(".y-axis").call(vis.yAxis);
-
-
 }
 
 CountVis.prototype.onSelectionChange = function(selectionStart, selectionEnd){
 	var vis = this;
-
 	vis.timeLabel.text(dateFormatter(selectionStart) + "  --  " + dateFormatter(selectionEnd))
-
-
 	vis.wrangleData();
 }
